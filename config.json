@@ -1,0 +1,18 @@
+{
+    "template_file": "HeroBase.txt",
+    "class_name": "HeroBase",
+    "s": "self",
+    "h": "hid",
+    "t": "type",
+    "sub": "subType",
+    "q": "quality",
+    "l": "level",
+    "lm": "levelMax",
+    "a": "attack",
+    "sd": "speed",
+    "i": "itemId",
+    "tg": "target",
+    "at": "activate",
+    "settingip_name": "ServerIp",
+    "file_name": "templatecpp.py"
+}

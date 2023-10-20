@@ -1,0 +1,1708 @@
+{% extends 'layout_left.html' %}
+{% load static %} <!-- 必写,Django根据seting自动查找当前App静态文件 -->
+
+{% block head %}
+    <link href="{% static '/layui/css/layui.css' %}" type="text/css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+
+
+    <form class="layui-form" id="addForm" lay-filter="scoreRuleForm" method="post">
+        {% csrf_token %}
+        <div class="layui-form-item" id="add_info_div">
+
+            <div class="layui-input-block">
+
+            </div>
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+
+                    <div class="grid-demo grid-demo-bg1">
+                        模板类型对应任务道具：<select id="selectItemName" name="selectItemName" lay-verify="required"
+                                           lay-filter="selectItemName" lay-search>
+                        <option value="" name='itemName'></option>
+                    </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs4 layui-col-sm12 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        确认:
+                        <div>
+                            <button type="button" class="layui-btn" id="affirmBtn" name="affirmBtn">确认</button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="layui-input-block">
+
+                </div>
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="itemFormInfo">
+                        <thead>
+                        <tr>
+                            <th>道具id</th>
+                            <th>道具名称</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbMain"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        选择类型： <select name="activityType" id="activityType" lay-filter="activityType">
+                        <option value="">请选择活动类型</option>
+                        <option value="1">开服任务</option>
+                        <option value="2">捐赠</option>
+                        <option value="3">掉落</option>
+                        <option value="4">兑换</option>
+                    </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        请选择道具：<select id="allItemName" name="allItemName" lay-verify="required"
+                                      lay-filter="allItemName" lay-search>
+                        <option value="" name='itemName'></option>
+                    </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                    <div class="grid-demo grid-demo-bg1">
+                        请输入道具数量：<input type="text" name="rewardCount" autocomplete="off"
+                                       id="rewardCount"
+                                       placeholder="输入道具数量"
+                                       class="layui-input"
+                                       onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                       onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        选择兑换消耗类型： <select name="" id="exchangeTypeItem" lay-filter="exchangeTypeItem">
+                        <option value="" name='itemName'></option>
+                    </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        请输入兑换消耗数量：<input type="text" name="itemCount" autocomplete="off"
+                                         id="exchangeCount"
+                                         placeholder="输入道具数量"
+                                         class="layui-input"
+                                         readonly="true"
+                                         onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                         onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+
+
+                <div class="layui-col-xs4 layui-col-sm12 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        添加一条活动奖励:
+                        <div>
+                            <button type="button" class="layui-btn" id="activityBtn" name="activityBtn">添加一条活动奖励
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="layui-input-block">
+
+                </div>
+
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+
+            <div class="layui-row layui-input-block">
+
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="itemFormInfo">
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>活动类型</th>
+                            <th>道具名称</th>
+                            <th>道具数量</th>
+                            <th>兑换消耗</th>
+                            <th>消耗数量</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_reward_table"></tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+            <div class="layui-row layui-input-block">
+                添加一条活动:
+                <div>
+                    <button type="button" class="layui-btn" id="addActivityBtn" name="addActivityBtn">添加一条活动
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="activityFormInfo">
+                        <thead>
+                        <tr>
+                            <th>活动ID</th>
+                            <th>活动类型</th>
+                            <th>活动限制</th>
+                            <th>捐赠掉落池</th>
+                            <th>捐献最大等级</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_info_table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        选择任务类型： <select name="taskTypeInfo" id="taskTypeInfo" lay-filter="taskTypeInfo">
+                        <option value="" name="taskTypeInfo">请选择任务类型</option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        解锁天数：<input type="text" name="taskDay" autocomplete="off"
+                                    id="taskDay"
+                                    placeholder="输入解锁天数"
+                                    class="layui-input"
+                                    onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                    onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        任务所达到数值：<input type="text" name="taskNum" autocomplete="off"
+                                       id="taskNum"
+                                       placeholder="等级或者场次等"
+                                       class="layui-input"
+                                       onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                       onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                    <div class="grid-demo grid-demo-bg1">
+                        选择任务累积/达到： <select name="taskIsStorage" id="taskIsStorage" lay-filter="taskIsStorage">
+                        <option value="0">累积</option>
+                        <option value="1">达到</option>
+                    </select>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        选择奖励道具： <select name="" id="taskRewardName" lay-filter="taskRewardName">
+                        <option value="" name='taskRewardName'></option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        输入奖励数量：<input type="text" name="taskRewardCount" autocomplete="off"
+                                      id="taskRewardCount"
+                                      placeholder="输入奖励数量"
+                                      class="layui-input"
+                                      onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                      onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    确定奖励：
+                    <div class="grid-demo grid-demo-bg1">
+                        <button type="button" class="layui-btn" id="addTaskReward" name="addTaskReward">确定奖励
+                        </button>
+                    </div>
+                </div>
+
+                <div class="layui-input-block">
+
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="activityLimitInfo">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>奖励道具</th>
+                            <th>道具数量</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_task_reward_table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                添加这条任务:
+                <div>
+                    <button type="button" class="layui-btn" id="addTaskBtn" name="addTaskBtn">确定添加这条任务
+                    </button>
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="activityLimitInfo">
+                        <thead>
+                        <tr>
+                            <th>任务ID</th>
+                            <th>任务类型</th>
+                            <th>任务奖励</th>
+                            <th>奖励数量</th>
+                            <th>任务目标</th>
+                            <th>累积/达到</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_task_table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    选择时间：<input type="text" class="layui-input" id="timeScope"
+                                placeholder="yyyy-MM-dd HH:mm:ss~yyyy-MM-dd HH:mm:ss">
+                </div>
+            </div>
+
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" type="submit" lay-submit lay-filter="btnSubmit" id="btnSubmit">
+                        提交
+                    </button>
+                    <button type="reset" class="layui-btn layui-btn-primary" id="resetForm">取消</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+    {#            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#}
+    <form class="layui-form" id="addActivityForm" lay-filter="addActivityForm" method="post" style="display: none;">
+        <div class="layui-form-item" id="add_info_div">
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        选择类型： <select name="activityInfoType" id="activityInfoType" lay-filter="activityInfoType">
+                        <option value="">请选择活动类型</option>
+                        <option value="1">开服任务</option>
+                        <option value="2">捐赠</option>
+                        <option value="3">掉落</option>
+                        <option value="4">兑换</option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        请选择活动限制：<select id="receiveLimit" name="receiveLimit" lay-verify="required"
+                                        lay-filter="receiveLimit" lay-search>
+                        <option value="" name='limitType'></option>
+                    </select>
+                    </div>
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                    <div class="grid-demo grid-demo-bg1">
+                        请输入限制数量：<input type="text" name="limitCount" autocomplete="off"
+                                       id="limitCount"
+                                       placeholder="输入限制数量"
+                                       class="layui-input"
+                                       onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                       onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+
+                </div>
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    确定活动限制：
+                    <div class="grid-demo grid-demo-bg1">
+                        <button type="button" class="layui-btn" id="addActivityLimit" name="addActivityLimit">确定活动限制
+                        </button>
+                    </div>
+                </div>
+
+                <div class="layui-input-block">
+
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="activityLimitInfo">
+                        <thead>
+                        <tr>
+                            <th>活动限制</th>
+                            <th>活动数量</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_limit_table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        <button type="button" class="layui-btn" id="addActivityGroup" name="addActivityGroup">添加捐赠、掉落池子
+                        </button>
+                    </div>
+                </div>
+                <div class="layui-input-block">
+
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="activityLimitInfo">
+                        <thead>
+                        <tr>
+                            <th>捐赠、掉落池子</th>
+                            <th>捐献：兑换单独等级</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_limit_group"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" type="button" id="limitBtn">
+                        提交
+                    </button>
+                    <button type="reset" class="layui-btn layui-btn-primary" id="resetForm">取消</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+
+    <form class="layui-form" id="addActivityExtAttr" lay-filter="addActivityExtAttr" method="post"
+          style="display: none;" name="addActivityExtAttr">
+        <div class="layui-form-item" id="add_info_div">
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        请选择道具：<select id="extAttrItemName" name="extAttrItemName" lay-verify="required"
+                                      lay-filter="extAttrItemName" lay-search>
+                        <option value="" name='itemName'></option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                    <div class="grid-demo grid-demo-bg1">
+                        请输入捐赠数量：<input type="text" name="extAttrCount" autocomplete="off"
+                                       id="extAttrCount"
+                                       placeholder="请输入捐赠数量"
+                                       class="layui-input"
+                                       onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                       onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                    <div class="grid-demo grid-demo-bg1">
+                        请输入随机数量：<input type="text" name="extAttrRandomCount" autocomplete="off"
+                                       id="extAttrRandomCount"
+                                       placeholder="请输入随机数量"
+                                       class="layui-input"
+                                       onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                       onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md2">
+                    <div class="grid-demo grid-demo-bg1">
+                        请输入最大数量：<input type="text" name="extAttrMaxCount" autocomplete="off"
+                                       id="extAttrMaxCount"
+                                       placeholder="请输入最大数量"
+                                       class="layui-input"
+                                       onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                       onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    确定：
+                    <div class="grid-demo grid-demo-bg1">
+                        <button type="button" class="layui-btn" id="addExtAttr" name="addExtAttr">确定
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="activityExtAttrInfo">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>捐赠道具</th>
+                            <th>道具数量</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_extAttr_table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md3">
+                    <div class="grid-demo grid-demo-bg1">
+                        <button type="button" class="layui-btn" id="addGroup" name="addGroup">
+                            确定以上数据为第一个捐赠池
+                        </button>
+                    </div>
+
+                </div>
+                <div class="layui-input-block">
+
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-md9">
+                    <table class="layui-table" lay-even id="activityGroupTable">
+                        <thead>
+                        <tr>
+                            <th>捐赠、掉落池子</th>
+                            <th>捐献：兑换单独等级</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="activity_group_table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+            <div class="layui-row layui-input-block">
+                <div class="layui-col-xs6 layui-col-sm6 layui-col-md4">
+                    <div class="grid-demo grid-demo-bg1">
+                        请输入捐赠单独兑换等级：<input type="text" name="extAttrLv" autocomplete="off"
+                                           id="extAttrLv"
+                                           placeholder="请输入捐赠单独兑换等级"
+                                           class="layui-input"
+                                           onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}"
+                                           onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" type="button" lay-submit id="extAttrBtn">
+                        提交1
+                    </button>
+                    <button type="reset" class="layui-btn layui-btn-primary" id="resetForm">取消</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+
+
+    <table class="layui-hide" id="activation" lay-filter="activation"></table>
+
+{% endblock %}
+
+{% block js %}
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add">新增活动任务</button>
+        </div>
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    </script>
+
+    <script src="{% static 'layui/layui.js' %}" charset="utf-8"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
+    <script>
+
+        layui.use(['form', 'table', "laydate", 'layer'], function () {
+            var table = layui.table;
+            var form = layui.form;
+            var layer = layui.layer;
+            var laydate = layui.laydate;
+            var $ = layui.$;
+
+            // 第二步 监听父级，每当父级发生变化时，渲染子级的值
+            form.on('select(activityType)', function (data) {
+
+                var activityType = data.value;
+
+                if (parseInt(activityType) === 4) {
+
+                    $('#exchangeCount').attr("readonly", false);
+
+                    $('#exchangeTypeItem').attr("disabled", false).removeClass("layui-btn-disabled");
+
+                    let str = "<option value='' name='itemName'></option>";
+                    for (var i = 0; i < li.length; i++) {
+                        //组装数据
+                        str += "<option value='" + li[i] + "' name='itemName'>" + li[i] + ":" + ln[i] + "</option>";
+
+                    }
+                    //jquery赋值方式
+                    $("#exchangeTypeItem").html(str);
+                    //渲染select
+                    form.render();
+                } else {
+                    $('#exchangeCount').attr("readonly", "true");
+                    $('#exchangeTypeItem').attr('disabled', 'true')
+                    form.render('select');
+                }
+            });
+
+            // 第二步 监听父级，每当父级发生变化时，渲染子级的值
+            form.on('select(exchangeTypeItem)', function (data) {
+                var exchangeTypeItem = data.value;
+                if (parseInt(exchangeTypeItem) > 0) {
+                    $('#selectItemName').attr('disabled', 'true')
+                    form.render('select');
+                }
+
+            });
+
+
+            var itemInfo = JSON.parse(window.localStorage.activityItemInfo);
+            // 下拉框
+            let str = "<option value='' name='itemName'></option>";
+            for (let i of itemInfo) {
+                //组装数据
+                str += "<option value='" + i.itemId + "' name='itemName'>" + i.itemId + ":" + i.name + "</option>";
+            }
+            //jquery赋值方式
+            $("#selectItemName").html(str);
+            $("#taskRewardName").html(str);
+
+
+            var taskTypeInfo = JSON.parse(window.localStorage.taskTypeInfo);
+            // 下拉框
+            let taskStr = "<option value='' name='taskType'></option>";
+            for (let i of taskTypeInfo) {
+                //组装数据
+                taskStr += "<option value='" + i.taskType + "' name='taskType'>" + i.taskText + "</option>";
+            }
+            //jquery赋值方式
+            $("#taskTypeInfo").html(taskStr);
+
+
+            var allItemInfo = JSON.parse(window.localStorage.itemInfo);
+            // 下拉框
+            let allItem = "<option value='' name='allItemName'></option>";
+            for (let i of allItemInfo) {
+                //组装数据
+                allItem += "<option value='" + i.itemId + "' name='itemName'>" + i.itemId + ":" + i.name + "</option>";
+            }
+            //jquery赋值方式
+            $("#allItemName").html(allItem);
+            //重新渲染生效
+            form.render();
+            form.on('select(activityInfoType)', function (data) {
+                $('#addActivityGroup').addClass("layui-btn-disabled").attr("disabled", true);
+                var activityType = data.value;
+                if (parseInt(activityType) === 2) {
+                    $('#addActivityGroup').removeClass("layui-btn-disabled").attr("disabled", false);
+                    let limitStr = "<option value='' name='itemName'></option>"
+                    for (let i of itemInfo) {
+                        //组装数据
+                        limitStr += "<option value='" + i.itemId + "' name='itemName'>" + i.name + ":" + i.itemId + "</option>";
+                    }
+                    //jquery赋值方式
+                    $("#receiveLimit").html(limitStr);
+                    form.render();
+                } else if (parseInt(activityType) === 3) {
+                    $('#addActivityGroup').removeClass("layui-btn-disabled").attr("disabled", false);
+                    let limitStr = "<option value='' name='itemName'></option>"
+                    var rankInfo = [{"rankType": 1, "rankName": "排位:1"}, {
+                        "rankType": 2,
+                        "rankName": "合作:2"
+                    }, {"rankType": 3, "rankName": "契约:3"}]
+                    for (let i of rankInfo) {
+                        //组装数据
+                        limitStr += "<option value='" + i.rankType + "' name='itemName'>" + i.rankType + ":" + i.rankName + "</option>";
+                    }
+                    $("#receiveLimit").html(limitStr);
+                    form.render();
+                } else {
+                    let limitStr = "<option value='' name='itemName'></option>"
+                    var rewardValue = Object.values(rewardInfo)
+                    for (var i = 0; i < rewardValue.length; i++) {
+                        if (parseInt(activityType) === parseInt(rewardValue[i].activityType)) {
+                            limitStr += "<option value='" + rewardValue[i].id + "' name='itemName'>" + "奖励id" + ":" + rewardValue[i].id + "</option>";
+                        }
+                    }
+                    $("#receiveLimit").html(limitStr);
+                    form.render();
+                }
+            })
+
+
+            var myDate = new Date();
+
+            laydate.render({
+                elem: '#timeScope'
+                , type: 'datetime'
+                , range: '~'
+                , format: 'yyyy-M-d H:m:s'
+                , min: myDate.toLocaleString()
+            });
+
+            var li = []
+            var ln = []
+
+            $("#affirmBtn").on('click', function () {
+                var itemInfo = []
+                var mayselect = document.getElementById("selectItemName")
+                var index = mayselect.selectedIndex
+                var itemIdName = mayselect.options[index].text
+                var itemName = itemIdName.substr(itemIdName.indexOf(":") + 1, itemIdName.length)
+
+                for (let i of li) {
+                    if (i === mayselect.value) {
+                        alert("不可以重复选择")
+                        return false
+                    }
+                }
+                if (itemName === '') {
+                    alert("请选择道具")
+                    return false
+                } else {
+                    itemInfo.push({"itemId": mayselect.value, "itemName": itemName})
+
+                    $(document).ready(function () {
+
+                        var tbody = document.getElementById('tbMain');
+
+                        for (var i = 0; i < itemInfo.length; i++) { //遍历一下json数据
+                            var trow = getDataRow(itemInfo[i]); //定义一个方法,返回tr数据
+
+                            tbody.appendChild(trow);
+                        }
+                    })
+
+                    function getDataRow(h) {
+                        var row = document.createElement('tr'); //创建行
+
+                        var idCell = document.createElement('td'); //创建第一列id
+
+                        idCell.innerHTML = h.itemId; //填充数据
+                        row.appendChild(idCell); //加入行  ，下面类似
+
+                        var nameCell = document.createElement('td');//创建第二列name
+                        nameCell.innerHTML = h.itemName;
+                        row.appendChild(nameCell);
+
+                        //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+
+                        var delCell = document.createElement('td');//创建第四列，操作列
+                        row.appendChild(delCell);
+                        var btnDel = document.createElement('input'); //创建一个input控件
+                        btnDel.setAttribute('type', 'button'); //type="button"
+                        btnDel.setAttribute('value', '删除');
+                        btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                        //删除操作
+                        btnDel.onclick = function () {
+                            if (confirm("确定删除这一行嘛？")) {
+                                //找到按钮所在行的节点，然后删掉这一行
+                                var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                                var itemId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                                var idx = li.indexOf(itemId)
+
+                                li.splice(idx, 1)
+                                ln.splice(idx, 1)
+
+                                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                            }
+                        }
+                        delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+
+                        return row; //返回tr数据
+
+                    }
+
+                    // option中的value值itemId
+                    var iId = mayselect.value
+                    // option中的文字信息
+                    li.push(iId)
+                    ln.push(itemName)
+                    // $("#selectItemName").val()
+                    // 输入的value值
+                }
+            })
+
+            $("#resetForm").on('click', function () {
+                $('#selectItemName').attr("disabled", false).removeClass("layui-btn-disabled");
+                li = []
+                ln = []
+
+                $("#itemFormInfo  tr:not(:first)").empty("");
+            })
+
+            var rewardInfo = {}
+            $("#activityBtn").on('click', function () {
+                var mayselect = document.getElementById("allItemName")
+                var index = mayselect.selectedIndex
+                var itemIdName = mayselect.options[index].text
+                var itemName = itemIdName.substr(itemIdName.indexOf(":") + 1, itemIdName.length)
+                var itemCount = $("#rewardCount").val()
+                var exchangeCount = $("#exchangeCount").val()
+                var activityType = document.getElementById("activityType").value
+
+                var selectType = document.getElementById("activityType");
+                var typeIndex = selectType.selectedIndex;
+                var activityTypeName = selectType.options[typeIndex].label
+
+
+                var exchangeTypeSelect = document.getElementById("exchangeTypeItem")
+                var exchangeIndex = exchangeTypeSelect.selectedIndex
+                var exchangeTypeName = exchangeTypeSelect.options[exchangeIndex].text
+                var exchange = exchangeTypeName.substr(exchangeTypeName.indexOf(":") + 1, exchangeTypeName.length)
+
+
+                if (activityType === "") {
+                    alert("请选择活动类型")
+                    return false
+                } else if (parseInt(activityType) === 4 && exchangeTypeName === "" && exchangeCount === "") {
+                    alert("请选择兑换消耗并输入消耗数量")
+                    return false
+                } else if (itemName === '') {
+                    alert("请选择道具")
+                    return false
+                } else if (itemCount === '') {
+                    alert("请输入道具数量")
+                    return false
+                } else {
+                    if (Object.keys(rewardInfo).length <= 0) {
+                        rewardInfo [1] = {
+                            "id": 1,
+                            "activityType": activityType,
+                            "activityTypeName": activityTypeName,
+                            "itemId": mayselect.value,
+                            "itemName": itemName,
+                            "itemCount": itemCount,
+                            "exchangeTypeName": exchange,
+                            "exchangeItem": exchangeTypeSelect.value,
+                            "exchangeCount": exchangeCount,
+                        }
+                    } else {
+                        rewardInfo[Math.max.apply(null, Object.keys(rewardInfo)) + 1] = {
+                            "id": Math.max.apply(null, Object.keys(rewardInfo)) + 1,
+                            "activityType": activityType,
+                            "activityTypeName": activityTypeName,
+                            "itemId": mayselect.value,
+                            "itemName": itemName,
+                            "itemCount": itemCount,
+                            "exchangeTypeName": exchange,
+                            "exchangeItem": exchangeTypeSelect.value,
+                            "exchangeCount": exchangeCount,
+                        }
+                    }
+
+                    $(document).ready(function () {
+
+                        var tbody = document.getElementById('activity_reward_table');
+
+                        {#for (const [key, value] of Object.entries(rewardInfo)) { //遍历一下json数据#}
+                        var rewardValue = Object.values(rewardInfo)
+                        var trow = getDataRow(rewardValue[rewardValue.length - 1]); //定义一个方法,返回tr数据
+
+                        tbody.appendChild(trow);
+                        //}
+                    })
+
+                    function getDataRow(v) {
+                        var row = document.createElement('tr'); //创建行
+
+                        var idCell = document.createElement('td'); //创建第一列id
+                        idCell.innerHTML = v.id; //填充数据
+                        row.appendChild(idCell); //加入行  ，下面类似
+
+                        var activityTypeNameCell = document.createElement('td');//创建第二列name
+                        activityTypeNameCell.innerHTML = v.activityTypeName;
+                        row.appendChild(activityTypeNameCell);
+
+
+                        var itemNameCell = document.createElement('td'); //创建第一列id
+                        itemNameCell.innerHTML = v.itemName; //填充数据
+                        row.appendChild(itemNameCell); //加入行  ，下面类似
+
+                        var itemCountCell = document.createElement('td');//创建第二列name
+                        itemCountCell.innerHTML = v.itemCount;
+                        row.appendChild(itemCountCell);
+
+
+                        var exchangeTypeNameCell = document.createElement('td'); //创建第一列id
+                        exchangeTypeNameCell.innerHTML = v.exchangeTypeName; //填充数据
+                        row.appendChild(exchangeTypeNameCell); //加入行  ，下面类似
+
+                        var exchangeCountCell = document.createElement('td');//创建第二列name
+                        exchangeCountCell.innerHTML = v.exchangeCount;
+                        row.appendChild(exchangeCountCell);
+
+                        //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+
+                        var delCell = document.createElement('td');//创建第四列，操作列
+                        row.appendChild(delCell);
+                        var btnDel = document.createElement('input'); //创建一个input控件
+                        btnDel.setAttribute('type', 'button'); //type="button"
+                        btnDel.setAttribute('value', '删除');
+                        btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                        //删除操作
+                        btnDel.onclick = function () {
+                            if (confirm("确定删除这一行嘛？")) {
+                                //找到按钮所在行的节点，然后删掉这一行
+                                var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                                var infoId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                                delete rewardInfo[infoId]
+
+                                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                            }
+                        }
+                        delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+
+                        return row; //返回tr数据
+
+                    }
+                }
+            })
+
+            var activityLimitInfo = {}
+            $("#addActivityLimit").on('click', function () {
+                var mayselect = document.getElementById("receiveLimit")
+                var index = mayselect.selectedIndex
+                var limitName = mayselect.options[index].text
+                var limitTypeId = limitName.substr(limitName.indexOf(":") + 1, limitName.length)
+
+                var limitCount = document.getElementById("limitCount").value
+                var activityType = document.getElementById("activityInfoType").value
+
+                if (activityType === "") {
+                    alert("请选择活动类型")
+                    return false
+                } else if (limitName === '') {
+                    alert("请选择活动限制")
+                    return false
+                } else if (limitCount === '') {
+                    alert("请输入限制数量")
+                    return false
+                } else if (Object.keys(activityLimitInfo).length >= 10) {
+                    alert("一个池子最多可添加十组道具信息")
+                    return false
+                } else {
+                    if (Object.keys(activityLimitInfo).length <= 0) {
+                        activityLimitInfo [1] = {
+                            "limitId": 1,
+                            "activityType": activityType,
+                            "limitTypeId": limitTypeId,
+                            "limitName": limitName,
+                            "limitCount": limitCount,
+                            "extAttr": "",
+                            "extAttr2": "",
+                        }
+                    } else {
+                        activityLimitInfo[Math.max.apply(null, Object.keys(activityLimitInfo)) + 1] = {
+                            "limitId": Math.max.apply(null, Object.keys(activityLimitInfo)) + 1,
+                            "activityType": activityType,
+                            "limitTypeId": limitTypeId,
+                            "limitName": limitName,
+                            "limitCount": limitCount,
+                            "extAttr": "",
+                            "extAttr2": "",
+                        }
+                    }
+
+                    $(document).ready(function () {
+
+                        var tbody = document.getElementById('activity_limit_table');
+                        {#for (const [key, value] of Object.entries(rewardInfo)) { //遍历一下json数据#}
+                        var limitValue = Object.values(activityLimitInfo)
+                        var trow = getDataRow(limitValue[limitValue.length - 1]); //定义一个方法,返回tr数据
+
+                        tbody.appendChild(trow);
+                        //}
+                    })
+
+                    function getDataRow(v) {
+                        var row = document.createElement('tr'); //创建行
+
+                        var limitNameCell = document.createElement('td');//创建第二列name
+                        limitNameCell.innerHTML = v.limitName;
+                        row.appendChild(limitNameCell);
+
+                        var limitCountCell = document.createElement('td'); //创建第一列id
+                        limitCountCell.innerHTML = v.limitCount; //填充数据
+                        row.appendChild(limitCountCell); //加入行  ，下面类似
+
+                        //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+                        var delCell = document.createElement('td');//创建第四列，操作列
+                        row.appendChild(delCell);
+                        var btnDel = document.createElement('input'); //创建一个input控件
+                        btnDel.setAttribute('type', 'button'); //type="button"
+                        btnDel.setAttribute('value', '删除');
+                        btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                        //删除操作
+                        btnDel.onclick = function () {
+                            if (confirm("确定删除这一行嘛？")) {
+                                //找到按钮所在行的节点，然后删掉这一行
+                                var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                                var activityId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                                delete activityLimitInfo[activityId]
+
+                                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                                $('#activityInfoType').attr("disabled", false).removeClass("layui-btn-disabled");
+                                form.render('select');
+                            }
+                        }
+                        delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+                        return row; //返回tr数据
+                    }
+
+                    $('#activityInfoType').attr('disabled', 'true')
+                    form.render('select');
+                }
+            })
+
+            $("#addActivityGroup").on('click', function () {
+                var activityType = document.getElementById("activityInfoType").value
+
+                if (parseInt(activityType) === 2) {
+                    $('#extAttrRandomCount').addClass("layui-btn-disabled").attr("disabled", true);
+                    $('#extAttrMaxCount').addClass("layui-btn-disabled").attr("disabled", true);
+                    $('#extAttrCount').removeClass("layui-btn-disabled").attr("disabled", false);
+                    $('#extAttrLv').removeClass("layui-btn-disabled").attr("disabled", false);
+                    layer.open({
+                        type: 1,
+                        content: $("#addActivityExtAttr"), //这里content是一个普通的String
+                        area: ["900px", '800px'],//表单大小
+                    })
+                    // 下拉框
+                    let extAttrStr = "<option value='' name='allItemName'></option>";
+                    for (let i of allItemInfo) {
+                        //组装数据
+                        extAttrStr += "<option value='" + i.itemId + "' name='itemName'>" + i.itemId + ":" + i.name + "</option>";
+                    }
+                    //jquery赋值方式
+                    $("#extAttrItemName").html(extAttrStr);
+                    //渲染select
+                    form.render();
+
+                } else if (parseInt(activityType) === 3) {
+                    layer.open({
+                        type: 1,
+                        content: $("#addActivityExtAttr"), //这里content是一个普通的String
+                        area: ["900px", '800px'],//表单大小
+                    })
+                    $('#extAttrCount').addClass("layui-btn-disabled").attr("disabled", true);
+                    $('#extAttrLv').addClass("layui-btn-disabled").attr("disabled", true);
+                    $('#extAttrRandomCount').removeClass("layui-btn-disabled").attr("disabled", false);
+                    $('#extAttrMaxCount').removeClass("layui-btn-disabled").attr("disabled", false);
+                    let extAttrStr2 = "<option value='' name='itemName'></option>";
+                    for (let i of itemInfo) {
+                        //组装数据
+                        extAttrStr2 += "<option value='" + i.itemId + "' name='itemName'>" + i.itemId + ":" + i.name + "</option>";
+                    }
+                    //jquery赋值方式
+                    $("#extAttrItemName").html(extAttrStr2);
+                    //渲染select
+                    form.render();
+
+                } else {
+                    alert("其他活动类型不可添加掉落捐赠池")
+                    return false
+                }
+            })
+
+            var extAttrInfo = {}
+            $("#addExtAttr").on('click', function () {
+                var activityType = document.getElementById("activityInfoType").value
+                var mayselect = document.getElementById("extAttrItemName")
+                var index = mayselect.selectedIndex
+                var itemIdName = mayselect.options[index].text
+                var itemName = itemIdName.substr(itemIdName.indexOf(":") + 1, itemIdName.length)
+                var itemId = mayselect.value
+
+                if (parseInt(activityType) === 2) {
+                    var extAttrCount = document.getElementById("extAttrCount").value
+                } else {
+                    var extAttrCount = document.getElementById("extAttrRandomCount").value + "," + document.getElementById("extAttrMaxCount").value
+                }
+                if (itemName === "") {
+                    alert("请选择捐赠道具")
+                    return false
+                } else if (parseInt(activityType) === 2 && extAttrCount === '') {
+                    alert("请输入道具数量")
+                    return false
+                } else if (parseInt(activityType) === 3 && ($("#extAttrRandomCount").val() === '' || $("#extAttrMaxCount").val() === '')) {
+                    alert("请输入随机数量")
+                    return false
+                } else if (parseInt($("#extAttrRandomCount").val()) > parseInt($("#extAttrMaxCount").val())) {
+                    alert("请输入正确起始数量")
+                    return false
+                } else {
+                    if (Object.keys(extAttrInfo).length <= 0) {
+                        extAttrInfo[1] = {
+                            "extAttrId": 1,
+                            "extAttrNameInfo": itemName + "," + extAttrCount,
+                            "extAttrIdInfo": itemId + "," + extAttrCount
+                        }
+                    } else {
+                        extAttrInfo[Math.max.apply(null, Object.keys(extAttrInfo)) + 1] = {
+                            "extAttrId": Math.max.apply(null, Object.keys(extAttrInfo)) + 1,
+                            "extAttrNameInfo": itemName + "," + extAttrCount,
+                            "extAttrIdInfo": itemId + "," + extAttrCount
+                        }
+                    }
+
+                    $(document).ready(function () {
+
+                        var tbody = document.getElementById('activity_extAttr_table');
+                        {#for (const [key, value] of Object.entries(rewardInfo)) { //遍历一下json数据#}
+                        var extAttrValue = Object.values(extAttrInfo)
+                        var extAttrRow = getDataRow(extAttrValue[extAttrValue.length - 1]); //定义一个方法,返回tr数据
+                        tbody.appendChild(extAttrRow);
+                        //}
+                    })
+
+                    function getDataRow(extAttrRow) {
+                        var row = document.createElement('tr'); //创建行
+                        var itemCount = extAttrRow.extAttrNameInfo.substr(extAttrRow.extAttrNameInfo.indexOf(",") + 1, extAttrRow.extAttrNameInfo.length)
+                        var itemName = extAttrRow.extAttrNameInfo.split(",")[0]
+
+                        var IDCell = document.createElement('td');//创建第二列name
+                        IDCell.innerHTML = extAttrRow.extAttrId;
+                        row.appendChild(IDCell);
+
+                        var extAttrNameCell = document.createElement('td');//创建第二列name
+                        extAttrNameCell.innerHTML = itemName;
+                        row.appendChild(extAttrNameCell);
+
+                        var extAttrCountCell = document.createElement('td'); //创建第一列id
+                        extAttrCountCell.innerHTML = itemCount; //填充数据
+                        row.appendChild(extAttrCountCell); //加入行  ，下面类似
+
+                        //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+                        var delCell = document.createElement('td');//创建第四列，操作列
+                        row.appendChild(delCell);
+                        var btnDel = document.createElement('input'); //创建一个input控件
+                        btnDel.setAttribute('type', 'button'); //type="button"
+                        btnDel.setAttribute('value', '删除');
+                        btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                        //删除操作
+                        btnDel.onclick = function () {
+                            if (confirm("确定删除这一行嘛？")) {
+                                //找到按钮所在行的节点，然后删掉这一行
+                                var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                                var infoId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                                delete extAttrInfo[infoId]
+
+                                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                            }
+                        }
+                        delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+                        return row; //返回tr数据
+                    }
+                }
+            })
+
+            var extAttrGroupInfo = {}
+            $("#addGroup").on('click', function () {
+                $(document).ready(function () {
+                    var groupList = []
+                    var groupNameList = []
+                    for (var i = 0; i < Object.values(extAttrInfo).length; i++) {
+                        groupList.push(Object.values(extAttrInfo)[i].extAttrIdInfo)
+                        groupNameList.push(Object.values(extAttrInfo)[i].extAttrNameInfo)
+                    }
+                    if (Object.keys(extAttrGroupInfo).length <= 0) {
+                        extAttrGroupInfo[1] = {
+                            "groupId": 1,
+                            "groupList": groupList,
+                            "groupNameList": groupNameList
+                        }
+                    } else {
+                        extAttrGroupInfo[Math.max.apply(null, Object.keys(extAttrGroupInfo)) + 1] = {
+                            "groupId": Math.max.apply(null, Object.keys(extAttrGroupInfo)) + 1,
+                            "groupList": groupList,
+                            "groupNameList": groupNameList
+                        }
+                    }
+
+                    var tbody = document.getElementById('activity_group_table');
+                    {#for (const [key, value] of Object.entries(rewardInfo)) { //遍历一下json数据#}
+                    var groupValue = Object.values(extAttrGroupInfo)
+                    var groupRow = getDataRow(groupValue[groupValue.length - 1]); //定义一个方法,返回tr数据
+                    tbody.appendChild(groupRow);
+                    //}
+                })
+
+                function getDataRow(groupRow) {
+                    var row = document.createElement('tr'); //创建行
+
+                    var groupIDCell = document.createElement('td');//创建第二列name
+                    groupIDCell.innerHTML = groupRow.groupId;
+                    row.appendChild(groupIDCell);
+
+                    var groupNameCell = document.createElement('td');//创建第二列name
+                    groupNameCell.innerHTML = groupRow.groupNameList;
+                    row.appendChild(groupNameCell);
+
+                    //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+                    var delCell = document.createElement('td');//创建第四列，操作列
+                    row.appendChild(delCell);
+                    var btnDel = document.createElement('input'); //创建一个input控件
+                    btnDel.setAttribute('type', 'button'); //type="button"
+                    btnDel.setAttribute('value', '删除');
+                    btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                    //删除操作
+                    btnDel.onclick = function () {
+                        if (confirm("确定删除这一行嘛？")) {
+                            //找到按钮所在行的节点，然后删掉这一行
+                            var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                            var infoId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                            delete extAttrGroupInfo[infoId]
+
+                            this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                        }
+                    }
+                    delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+                    return row; //返回tr数据
+                }
+
+                $("#activity_extAttr_table").empty("")
+                extAttrInfo = {}
+            })
+
+            var activityExtAttr = {"groupList": [], "groupNameList": []}
+            $("#extAttrBtn").on('click', function () {
+
+                if (Object.keys(extAttrGroupInfo).length <= 0) {
+                    alert("请添加捐赠池")
+                    return false
+                }
+                $(document).ready(function () {
+                    for (var i = 0; i < Object.values(extAttrGroupInfo).length; i++) {
+                        activityExtAttr["groupList"].push("(" + Object.values(extAttrGroupInfo)[i].groupList + ")")
+                        activityExtAttr["groupNameList"].push("(" + Object.values(extAttrGroupInfo)[i].groupNameList + ")")
+                    }
+                    var tbody = document.getElementById('activity_limit_group');
+                    {#for (const [key, value] of Object.entries(rewardInfo)) { //遍历一下json数据#}
+                    var groupRow = getDataRow(activityExtAttr.groupNameList, $("#extAttrLv").val()); //定义一个方法,返回tr数据
+                    tbody.appendChild(groupRow);
+                    //}
+                })
+
+                function getDataRow(groupRow, extAttrLv) {
+                    var row = document.createElement('tr'); //创建行
+
+                    var groupCell = document.createElement('td');//创建第二列name
+                    groupCell.innerHTML = groupRow;
+                    row.appendChild(groupCell);
+
+                    var extAttrLvCell = document.createElement('td');//创建第二列name
+                    extAttrLvCell.innerHTML = extAttrLv;
+                    row.appendChild(extAttrLvCell);
+
+                    //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+                    var delCell = document.createElement('td');//创建第四列，操作列
+                    row.appendChild(delCell);
+                    var btnDel = document.createElement('input'); //创建一个input控件
+                    btnDel.setAttribute('type', 'button'); //type="button"
+                    btnDel.setAttribute('value', '删除');
+                    btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                    //删除操作
+                    btnDel.onclick = function () {
+                        if (confirm("确定删除这一行嘛？")) {
+                            //找到按钮所在行的节点，然后删掉这一行
+                            var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                            var infoId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                            delete extAttrGroupInfo[infoId]
+                            this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                        }
+                    }
+                    delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+                    return row; //返回tr数据
+                }
+
+                $('#addActivityExtAttr').reset()
+                layer.close(layer.index);
+            })
+
+            var activityInfo = {}
+            $("#limitBtn").on("click", function () {
+                var activityLimit = {"limitIdInfo": {}, "LimitNameInfo": {}}
+                var limitVal = Object.values(activityLimitInfo)
+                for (var i = 0; i < limitVal.length; i++) {
+                    var limit = {}
+                    var nLimit = {}
+                    alert(limitVal[i].limitTypeId)
+                    limit[limitVal[i].limitTypeId] = limitVal[i].limitCount
+                    nLimit[limitVal[i].limitName] = limitVal[i].limitCount
+                    activityLimit["limitIdInfo"] = limit
+                    activityLimit["LimitNameInfo"] = nLimit
+                }
+
+                if (Object.keys(activityInfo).length <= 0) {
+                    activityInfo[1] = {
+                        "activityId": 1,
+                        "activityType": $("#activityInfoType").val(),
+                        "activityLimit": activityLimit.limitIdInfo,
+                        "activityNameLimit": activityLimit.LimitNameInfo,
+                        "activityGroupList": activityExtAttr.groupList,
+                        "activityGroupNameLimit": activityExtAttr.groupNameList,
+                        "extAttrLv": $("#extAttrLv").val(),
+                    }
+                } else {
+                    activityInfo[Math.max.apply(null, Object.keys(activityInfo)) + 1] = {
+                        "activityId": Math.max.apply(null, Object.keys(activityInfo)) + 1,
+                        "activityType": $("#activityInfoType").val(),
+                        "activityLimit": activityLimit.limitIdInfo,
+                        "activityNameLimit": activityLimit.LimitNameInfo,
+                        "activityGroupList": activityExtAttr.groupList,
+                        "activityGroupNameLimit": activityExtAttr.groupNameList,
+                        "extAttrLv": $("#extAttrLv").val(),
+                    }
+                }
+
+                $(document).ready(function () {
+
+                    var activityVal = Object.values(activityInfo)
+
+                    var activityRow = activityVal[activityVal.length - 1]
+                    var tbody = document.getElementById('activity_info_table');
+                    var groupRow = getDataRow(activityRow); //定义一个方法,返回tr数据
+                    tbody.appendChild(groupRow);
+                    //}
+                })
+
+                function getDataRow(groupRow) {
+                    var row = document.createElement('tr'); //创建行
+                    var activityIdCell = document.createElement('td');//创建第二列name
+                    activityIdCell.innerHTML = groupRow.activityId;
+                    row.appendChild(activityIdCell);
+
+                    var activityTypeCell = document.createElement('td');//创建第二列name
+                    activityTypeCell.innerHTML = groupRow.activityType;
+                    row.appendChild(activityTypeCell);
+
+                    var activityLimitCell = document.createElement('td');//创建第二列name
+                    activityLimitCell.innerHTML = JSON.stringify(groupRow.activityNameLimit);
+                    row.appendChild(activityLimitCell);
+
+                    var groupCell = document.createElement('td');//创建第二列name
+                    groupCell.innerHTML = groupRow.activityGroupNameLimit;
+                    row.appendChild(groupCell);
+
+                    var extAttrLvCell = document.createElement('td');//创建第二列name
+                    extAttrLvCell.innerHTML = groupRow.extAttrLv;
+                    row.appendChild(extAttrLvCell);
+
+                    //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+                    var delCell = document.createElement('td');//创建第四列，操作列
+                    row.appendChild(delCell);
+                    var btnDel = document.createElement('input'); //创建一个input控件
+                    btnDel.setAttribute('type', 'button'); //type="button"
+                    btnDel.setAttribute('value', '删除');
+                    btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                    //删除操作
+                    btnDel.onclick = function () {
+                        if (confirm("确定删除这一行嘛？")) {
+                            //找到按钮所在行的节点，然后删掉这一行
+                            var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                            var infoId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                            delete activityInfo[infoId]
+                            this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                        }
+                    }
+                    delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+                    return row; //返回tr数据
+                }
+
+                $('#addActivityForm')[0].reset();
+                $("#activity_limit_table").empty("")
+                layui.form.render();
+                layer.closeAll();
+            })
+
+
+            $("#addActivityBtn").on('click', function () {
+                layer.open({
+                    type: 1,
+                    content: $("#addActivityForm"), //这里content是一个普通的String
+                    area: ["900px", '800px'],//表单大小
+                })
+            })
+
+            var rewardItem = []
+            var rewardCountList = []
+            var rewardName = []
+
+            $("#addTaskReward").on("click", function () {
+                var rewardItemInfo = []
+                var mayselect = document.getElementById("taskRewardName")
+                var index = mayselect.selectedIndex
+                var itemName = mayselect.options[index].text.split(":")[1]
+                var itemId = mayselect.value
+                var rewardCount = document.getElementById("taskRewardCount").value
+
+                for (let i of rewardItem) {
+                    if (i === mayselect.value) {
+                        alert("不可以重复选择")
+                        return false
+                    }
+                }
+                if (itemName === "") {
+                    alert("未选择奖励道具")
+                    return false
+                } else if (rewardCount === "") {
+                    alert("未输入奖励数量")
+                    return false
+                } else {
+                    rewardItemInfo.push({"itemId": itemId, "itemName": itemName, "itemCount": rewardCount})
+
+                    $(document).ready(function () {
+
+                        var tbody = document.getElementById('activity_task_reward_table');
+
+                        for (var i = 0; i < rewardItemInfo.length; i++) { //遍历一下json数据
+                            var trow = getDataRow(rewardItemInfo[i]); //定义一个方法,返回tr数据
+                            tbody.appendChild(trow);
+                        }
+                    })
+
+                    function getDataRow(h) {
+                        var row = document.createElement('tr'); //创建行
+
+                        var rewardIdCell = document.createElement('td'); //创建第一列id
+                        rewardIdCell.innerHTML = h.itemId; //填充数据
+                        row.appendChild(rewardIdCell); //加入行  ，下面类似
+
+                        var rewardNameCell = document.createElement('td');//创建第二列name
+                        rewardNameCell.innerHTML = h.itemName;
+                        row.appendChild(rewardNameCell);
+
+                        var jobCell = document.createElement('td');//创建第三列job
+                        jobCell.innerHTML = h.itemCount;
+                        row.appendChild(jobCell);
+
+                        //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+
+                        var delCell = document.createElement('td');//创建第四列，操作列
+                        row.appendChild(delCell);
+                        var btnDel = document.createElement('input'); //创建一个input控件
+                        btnDel.setAttribute('type', 'button'); //type="button"
+                        btnDel.setAttribute('value', '删除');
+                        btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                        //删除操作
+                        btnDel.onclick = function () {
+                            if (confirm("确定删除这一行嘛？")) {
+                                //找到按钮所在行的节点，然后删掉这一行
+                                var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                                var itemId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                                var idx = li.indexOf(itemId)
+
+                                rewardItem.splice(idx, 1)
+                                rewardName.splice(idx, 1)
+                                rewardCountList.splice(idx, 1)
+
+                                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                            }
+                        }
+                        delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+
+                        return row; //返回tr数据
+
+                    }
+
+                    rewardItem.push(itemId)
+                    rewardCountList.push(rewardCount)
+                    rewardName.push(itemName)
+                }
+            })
+
+            var taskRewardInfo = {}
+            $("#addTaskBtn").on('click', function () {
+                var mayselect = document.getElementById("taskTypeInfo")
+                var index = mayselect.selectedIndex
+                var taskText = mayselect.options[index].text
+                var taskTypeId = mayselect.value
+                var taskDay = document.getElementById("taskDay").value
+                var taskNum = document.getElementById("taskNum").value
+
+                var isStorage = document.getElementById("taskIsStorage").value
+                var isStorageIndex = document.getElementById("taskIsStorage").selectedIndex;
+                var isStorageName = document.getElementById("taskIsStorage").options[isStorageIndex].label
+
+                if (rewardItem.length <= 0) {
+                    alert("未选择任务奖励")
+                    return false
+                } else if (taskText === "") {
+                    alert("未选择任务奖励")
+                    return false
+                } else if (parseInt(taskDay) <= 0) {
+                    alert("任务解锁时间至少一天")
+                    return false
+                } else if (parseInt(taskNum) <= 0) {
+                    alert("任务所达目标至少为1")
+                    return false
+                } else if (isStorage === "") {
+                    alert("未知任务累积还是达到")
+                    return false
+                } else {
+                    if (Object.keys(taskRewardInfo).length <= 0) {
+                        taskRewardInfo[10227] = {
+                            "taskId": 10227,
+                            "taskTypeId": taskTypeId,
+                            "taskText": taskText,
+                            "taskDay": taskDay,
+                            "taskRewardName": rewardName,
+                            "taskReward": rewardItem,
+                            "taskRewardCount": rewardCountList,
+                            "taskNum": taskNum,
+                            "isStorage": isStorage,
+                            "isStorageName": isStorageName,
+
+                        }
+                    } else {
+                        taskRewardInfo[Math.max.apply(null, Object.keys(taskRewardInfo)) + 1] = {
+                            "taskId": Math.max.apply(null, Object.keys(taskRewardInfo)) + 1,
+                            "taskTypeId": taskTypeId,
+                            "taskText": taskText,
+                            "taskDay": taskDay,
+                            "taskRewardName": rewardName,
+                            "taskReward": rewardItem,
+                            "taskRewardCount": rewardCountList,
+                            "taskNum": taskNum,
+                            "isStorage": isStorage,
+                            "isStorageName": isStorageName,
+                        }
+                    }
+
+
+                    $(document).ready(function () {
+
+                        var taskVal = Object.values(taskRewardInfo)
+
+                        var taskRows = taskVal[taskVal.length - 1]
+
+                        var tbody = document.getElementById('activity_task_table');
+                        var taskRow = getDataRow(taskRows); //定义一个方法,返回tr数据
+                        tbody.appendChild(taskRow);
+                        //}
+                    })
+
+                    function getDataRow(taskRow) {
+                        var row = document.createElement('tr'); //创建行
+                        var taskIdCell = document.createElement('td');//创建第二列name
+                        taskIdCell.innerHTML = taskRow.taskId;
+                        row.appendChild(taskIdCell);
+
+                        var taskTextCell = document.createElement('td');//创建第二列name
+                        taskTextCell.innerHTML = taskRow.taskText;
+                        row.appendChild(taskTextCell);
+
+                        var taskRewardNameCell = document.createElement('td');//创建第二列name
+                        taskRewardNameCell.innerHTML = taskRow.taskRewardName;
+                        row.appendChild(taskRewardNameCell);
+
+                        var rewardCountListCell = document.createElement('td');//创建第二列name
+                        rewardCountListCell.innerHTML = taskRow.taskRewardCount;
+                        row.appendChild(rewardCountListCell);
+
+                        var taskNumCell = document.createElement('td');//创建第二列name
+                        taskNumCell.innerHTML = taskRow.taskNum;
+                        row.appendChild(taskNumCell);
+
+                        var isStorageCell = document.createElement('td');//创建第二列name
+                        isStorageCell.innerHTML = taskRow.isStorage;
+                        row.appendChild(isStorageCell);
+
+                        //到这里，json中的数据已经添加到表格中，下面为每行末尾添加删除按钮
+                        var delCell = document.createElement('td');//创建第四列，操作列
+                        row.appendChild(delCell);
+                        var btnDel = document.createElement('input'); //创建一个input控件
+                        btnDel.setAttribute('type', 'button'); //type="button"
+                        btnDel.setAttribute('value', '删除');
+                        btnDel.setAttribute('class', "layui-btn layui-btn-sm layui-btn-danger");
+
+                        //删除操作
+                        btnDel.onclick = function () {
+                            if (confirm("确定删除这一行嘛？")) {
+                                //找到按钮所在行的节点，然后删掉这一行
+                                var c = JSON.stringify(this.parentNode.parentNode.innerText)
+                                var infoId = c.substring(c.indexOf('"') + 1, c.indexOf("\\t"))
+                                delete taskRewardInfo[infoId]
+                                this.parentNode.parentNode.parentNode.removeChild(this.parentNode.parentNode);
+                            }
+                        }
+                        delCell.appendChild(btnDel);  //把删除按钮加入td，别忘了
+                        return row; //返回tr数据
+                    }
+
+
+                }
+            })
+
+
+            // 表单提交
+            form.on('submit(btnSubmit)', function (data) {
+
+                if (Object.values(rewardInfo).length <= 0) {
+                    alert("请添加活动奖励")
+                    return false
+                } else if (Object.keys(activityInfo).length <= 0) {
+                    alert("未添加活动信息")
+                    return false
+                } else if (li.length === 0) {
+                    alert("请选择活动模板道具")
+                    return false
+                } else if ($("#timeScope").val() === "") {
+                    alert("时间不能为空")
+                    return false
+                } else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/cms/operate/addActivity/",
+                        data: {
+                            "rewardInfo": JSON.stringify(rewardInfo),
+                            "activityInfo": JSON.stringify(activityInfo),
+                            "taskRewardInfo": JSON.stringify(taskRewardInfo),
+                            "activityTemplateInfo": JSON.stringify({
+                                "activityList": Object.keys(activityInfo),
+                                "extAttr": li,
+                                "time": $("#timeScope").val()
+                            }),
+                        },
+                        dataType: "JSON",
+                        success: function (res) { 　 // 请求被成功响应之后会做的事
+                            alert(res.message)
+                        }
+                    });
+                }
+            });
+
+
+            //头工具栏事件
+            table.on('toolbar(activation)', function (obj) {//监听的是<table class="layui-hide" id="users" lay-filter="users"></table>
+                if (obj.event === 'add') {
+                    layer.open({
+                        type: 1,
+                        content: $("#addForm"), //这里content是一个普通的String
+                        area: ["1000px", '1000px'],//表单大小
+                    })
+                }
+            });
+
+            $.ajaxSetup({
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+            })
+
+        });
+
+    </script>
+{% endblock %}

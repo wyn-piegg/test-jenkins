@@ -1,0 +1,229 @@
+{% extends 'layout_left.html' %}
+{% load static %} <!-- 必写,Django根据seting自动查找当前App静态文件 -->
+{% load poll_extras %}
+{% block head %}
+    <link href="{% static '/layui/css/layui.css' %}" type="text/css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+    <form class="layui-form" id="addTemplateForm" lay-filter="addTemplateForm" method="post"
+          style="display: none;" name="addTemplateForm">
+
+
+    </form>
+
+    <table class="layui-hide" id="templateInfo" lay-filter="templateInfo"></table>
+    <table class="layui-hide" id="emailInfo" lay-filter="emailInfo"></table>
+
+{% endblock %}
+
+{% block js %}
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">开关</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="switch" lay-skin="switch" lay-text="启用|禁用" checked>
+        </div>
+    </div>
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="demoTable">
+            <div class="layui-inline">
+                <select name="" id="emailType" lay-filter="emailType">
+                    <option value="0" name=''>请选择邮件类型</option>
+                    <option value="1" name=''>全服</option>
+                    <option value="2" name=''>单人</option>
+                    <option value="3" name=''>等级</option>
+                    <option value="4" name=''>渠道</option>
+                </select>
+            </div>
+
+            <div class="layui-inline">
+                <input class="layui-input" type="search" name="searchInfo" id="searchInfo" autocomplete="off"
+                       placeholder="输入查询条件">
+            </div>
+
+            <button class="layui-btn" id="select_email_btn" lay-event="select_email_btn" type="button"><i
+                    class="layui-icon">&#xe615;</i>搜索
+            </button>
+        </div>
+
+        <div class="layui-form-label-col">
+
+        </div>
+        <div class="layui-form-label-col">
+            <div class="layui-inline">
+                <button class="layui-btn" id="add_template_btn" lay-event="add_template_btn" type="button">添加活动模板
+                </button>
+            </div>
+            <div class="layui-inline">
+                <button class="layui-btn" id="select_email_btn" lay-event="select_email_btn" type="button">发布活动
+                </button>
+            </div>
+        </div>
+
+
+        <div class="layui-form-label-col">
+            活动模板信息
+        </div>
+    </script>
+
+
+
+    <script type="text/html" id="toolbarActivity">
+        <hr class="layui-border-red">
+        <div class="layui-form-label-col">
+            活动信息
+        </div>
+    </script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    </script>
+
+    <script type="text/html" id="barActivity">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    </script>
+    <script src="{% static 'layui/layui.js' %}" charset="utf-8"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
+    <script>
+
+        layui.use(['form', 'table', "laydate", 'layer'], function () {
+            var table = layui.table;
+            var form = layui.form;
+            var layer = layui.layer;
+            var $ = layui.$;
+            //方法级渲染
+{#/cms/operate/addActivity/#}
+            table.render({
+                elem: '#templateInfo',
+                url: '/cms/email/emailInfo/',
+                toolbar: '#toolbarDemo',
+                cols: [[
+                    {field: 'templateId', title: '活动模板id', width: 200, sort: true}
+                    , {field: 'tActivityList', title: '活动开放类型', width: 200, sort: true}
+                    , {field: 'tActivityItem', title: '活动任务道具', width: 200, sort: true}
+                    , {field: 'tStartTime', title: '活动开启时间', width: 200, sort: true}
+                    , {field: 'tEndTime', title: '活动结束时间', width: 200, sort: true}
+                    , {field: 'rewardInfo', title: '活动奖励信息', width: 200, sort: true}
+                    , {fixed: 'right', title: '操作', width: 120, align: 'center', toolbar: '#barDemo',}
+                ]],
+                id: 'templateReload',
+                page: {
+                    layout: ['limit', 'count', 'prev', 'page', 'next', 'skip']
+                    , curr: 1
+                    , groups: 6
+                    , limit: 5
+                },
+                even: true, //开启隔行背景
+                done: function () {
+                    toolbar();
+                },
+            });
+
+
+            table.render({
+                elem: '#emailInfo',
+                url: '/cms/email/emailInfo/',
+                toolbar: "#toolbarActivity",
+                cols: [[
+                    {field: 'id', title: '活动', width: 80, sort: true, fixed: 'left'}
+                    , {field: 'title', title: '活动标题', width: 200, sort: true}
+                    , {field: 'message', title: '活动时间', width: 200, sort: true}
+                    , {field: 'sendtype', title: '活动内容', width: 200, sort: true}
+                    , {field: 'userlist', title: '活动奖励内容', width: 200, sort: true}
+                    , {field: 'userlist', title: '开启状态', width: 200, sort: true}
+                    , {fixed: 'right', title: '操作', width: 120, align: 'center', toolbar: '#barActivity',}
+                ]],
+                id: 'testReload',
+                page: {
+                    layout: ['limit', 'count', 'prev', 'page', 'next', 'skip']
+                    , curr: 1
+                    , groups: 6
+                    , limit: 5
+                },
+                even: true, //开启隔行背景
+                done: function () {
+                    toolbar();
+                },
+            });
+
+            $("#add_template_btn").on('click', function () {
+                layer.open({
+                    type: 1,
+                    content: $("#addTemplateForm"), //这里content是一个普通的String
+                    area: ["900px", '800px'],//表单大小
+                })
+            })
+
+            function toolbar() {
+
+                $("#select_email_btn").on('click', function () {
+                    var emailType = $("#emailType").val()
+                    var searchInfo = $("#searchInfo").val()
+                    if (emailType === "1") {
+                        searchInfo = ""
+                    } else if (emailType === "4") {
+                        searchInfo = $("#channelType").val()
+                    }
+                    if (emailType === "0") {
+                        alert("未选择查询邮件类型")
+                        return false
+                    } else {
+                        table.reload('testReload', {
+                            url: '/cms/operate/getEmailInfo/',
+                            method: 'get',
+                            page: {
+                                curr: 1
+                            }
+                            , where: {'emailType': emailType, 'searchInfo': searchInfo},
+                        }, 'data')
+                    }
+                })
+
+
+            }
+
+            //监听行工具事件
+            table.on('tool(emailInfo)', function (obj) {
+                if (obj.event === 'detail') {
+                    {#if (read != null) read(obj)#}
+                    layer.open({
+                        type: 1,
+                        content: $("#detail_form"),
+                        area: ["800px", '700px'],
+                        success: function () {
+                            var detail_text = ''
+                            if (Object.keys(obj.data.itemdict).length <= 0) {
+                                detail_text += '无附件'
+                            } else {
+                                var storage = window.localStorage;
+                                var newObject = JSON.parse(storage.itemNmae);
+                                valObject = eval(obj.data.itemdict);
+                                for (var k in valObject) {
+                                    detail_text += "{ " + newObject[k] + ':' + valObject[k] + " }" + ' ,  '
+                                }
+                            }
+                            var reward_type = "全服"
+                            if (obj.data.sendtype === "个人") {
+                                reward_type = obj.data.userlist
+                            }
+
+                            form.val("detailForm", {
+                                "detail_id": obj.data.id,
+                                "reward_serverId": obj.data.serverId,
+                                "detail_text": detail_text,
+                                "detail_title": obj.data.title,
+                                "detail_context": obj.data.message,
+                                "reward_type": reward_type,
+                                "reward_sendTime": new Date(obj.data.sendtime * 1000).toLocaleString().replace(/:\d{1,2}$/, ' ')
+
+                            })
+                        }
+                    })
+                }
+            });
+        });
+
+    </script>
+{% endblock %}

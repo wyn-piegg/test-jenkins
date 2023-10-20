@@ -1,0 +1,477 @@
+{% extends 'layout_left.html' %}
+{% load static %} <!-- 必写,Django根据seting自动查找当前App静态文件 -->
+
+{% block head %}
+    <link href="{% static '/layui/css/layui.css' %}" type="text/css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+    <form class="layui-form" id="detail_form" style="display:none" lay-filter="detailForm">
+        <div class="layui-form-item" id="detail_info_div" lay-filter="layuiadmin-form-role">
+            <div class="layui-input-block">
+
+            </div>
+            <div class="layui-input-block">用户基础信息</div>
+
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        账号：<input type="text" name="detail_uid" id="detail_uid" lay-verify="required" autocomplete="off"
+                                  class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        昵称：<input type="text" name="detail_user_name" id="detail_user_name" lay-verify="required"
+                                  autocomplete="off"
+                                  class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        用户等级：<input type="text" name="detail_lv" id="detail_lv" lay-verify="required"
+                                    autocomplete="off"
+                                    class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        注册时间：<input type="text" name="detail_create_time" id="detail_create_time" lay-verify="required"
+                                    autocomplete="off"
+                                    class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        最近登录：<input type="text" name="detail_last_time" id="detail_last_time" lay-verify="required"
+                                    autocomplete="off"
+                                    class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        公会：<input type="text" name="detail_guild" id="detail_guild" lay-verify="required"
+                                  autocomplete="off"
+                                  class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+
+            </div>
+            <div class="layui-input-block">用户货币信息</div>
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        钻石：<input type="text" name="detail_diamond" id="detail_diamond" lay-verify="required"
+                                  autocomplete="off"
+                                  class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        金币：<input type="text" name="detail_silver" id="detail_silver" lay-verify="required"
+                                  autocomplete="off"
+                                  class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form class="layui-form" id="update_form" style="display:none" lay-filter="updateForm" method="post">
+        {% csrf_token %}
+        <div class="layui-form-item" id="detail_info_div" lay-filter="layuiadmin-form-role">
+            <div class="layui-input-block">
+
+            </div>
+            <div class="layui-input-block">操作用户信息：强制更名，封号，禁言</div>
+
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        账号：<input type="text" name="update_user_id" id="update_user_id" lay-verify="required"
+                                  autocomplete="off"
+                                  class="layui-input" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-input-inline">
+                        强制修改昵称：<input type="text" name="update_user_name" id="update_user_name" lay-verify="required"
+                                      autocomplete="off"
+                                      class="layui-input" maxlength="1"
+                                      oninput="this.value=this.value.replace(/[^0-1]/g, '')"
+                                      placeholder="0：不修改，1：强制修改一个随机名称" value="0">
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-col-md9">
+                        封号时间：<input type="text" class="layui-input" id="banLoginTime" placeholder="yyyy-MM-dd HH:mm:ss">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-row layui-input-block">
+                <div class="layui-form-item">
+                    <div class="layui-col-md9">
+                        禁言时间：<input type="text" class="layui-input" id="banChatTime" placeholder="yyyy-MM-dd HH:mm:ss">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-input-block">
+                <div class="layui-form-item">
+                    <button class="layui-btn" type="submit" lay-submit lay-filter="btnSubmit" id="btnSubmit">
+                        提交
+                    </button>
+                    <button type="reset" class="layui-btn layui-btn-primary" id="resetForm">取消</button>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+
+    <table class="layui-hide" id="userInfo" lay-filter="userInfo"></table>
+
+{% endblock %}
+
+{% block js %}
+
+    <script type="text/html" id="toolbarDemo">
+        <div class="demoTable">
+            用户id：
+            <div class="layui-inline">
+                <input class="layui-input" type="search" name="userIdInfo" id="userIdInfo" autocomplete="off"
+                       placeholder="输入用户id">
+            </div>
+            <button class="layui-btn" id="select_id_btn" lay-event="select_id_btn" type="button"><i class="layui-icon">&#xe615;</i>搜索
+            </button>
+
+            用户昵称：
+            <div class="layui-inline">
+                <input class="layui-input" type="search" name="userNameInfo" id="userNameInfo" autocomplete="off"
+                       placeholder="输入用户昵称">
+            </div>
+            <button class="layui-btn" id="select_name_btn" lay-event="select_name_btn" type="button"><i
+                    class="layui-icon">&#xe615;</i>搜索
+            </button>
+        </div>
+
+        <div class="layui-form-label-col">
+
+        </div>
+
+    </script>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">开关</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="login_switch" lay-skin="switch" lay-text="启用|禁用" checked>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">开关</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="chat_switch" lay-skin="switch" lay-text="启用|禁用" checked>
+        </div>
+    </div>
+
+
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-warm layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="edit">操作</a>
+    </script>
+
+    <script src="{% static 'layui/layui.js' %}" charset="utf-8"></script>
+    <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
+    <script>
+
+        layui.use(['form', 'table', "laydate", 'layer'], function () {
+            var table = layui.table;
+            var form = layui.form;
+            var layer = layui.layer;
+            var laydate = layui.laydate;
+            var $ = layui.$;
+
+            var myDate = new Date();
+
+            laydate.render({
+                elem: '#banChatTime'
+                , type: 'datetime'
+                , range: '~'
+                , min: myDate.toLocaleString()
+            });
+
+            laydate.render({
+                elem: '#banLoginTime'
+                , type: 'datetime'
+                , range: '~'
+                , min: myDate.toLocaleString()
+            });
+
+
+            //方法级渲染
+            table.render({
+                elem: '#userInfo',
+                url: '/game/operate/userInfo/',
+                toolbar: '#toolbarDemo',
+                type: 'post',
+                cols: [[
+                    {field: 'uid', title: '用户id', width: 100}
+                    , {field: 'accountName', title: '用户账号', width: 100}
+                    , {field: 'name', title: '用户昵称', width: 150, sort: true}
+                    , {field: 'lv', title: '用户等级', width: 100, sort: true}
+                    , {field: 'createTime', title: '注册时间', width: 100, sort: true}
+                    , {field: 'lastTime', title: '最近登陆', width: 100, sort: true}
+                    , {field: 'guildName', title: '公会', width: 150, sort: true}
+                    , {field: 'diamondNum', title: '钻石', width: 80, sort: true}
+                    , {field: 'silver', title: '金币', width: 100, sort: true}
+                    , {
+                        field: 'user_login_state',
+                        title: '永久封号',
+                        width: 100,
+                        sort: true,
+                        align: 'center',
+                        templet: function (res) {
+                            let menuId = res.id
+                            if (res.user_login_state === 0) {
+                                return "<input type='checkbox' menuId='" + menuId + "' lay-skin='switch' lay-text='正常|冻结' lay-filter='login_state' checked>"
+                            } else if (res.user_login_state === 1) {
+                                return "<input type='checkbox' menuId='" + menuId + "' lay-skin='switch' lay-text='正常|冻结' lay-filter='login_state'>"
+                            }
+                        }
+                    }
+                    , {
+                        field: 'user_chat_state',
+                        title: '永久禁言',
+                        width: 100,
+                        sort: true,
+                        align: 'center',
+                        templet: function (res) {
+                            let menuId = res.id
+                            if (res.user_chat_state === 0) {
+                                return "<input type='checkbox' menuId='" + menuId + "' lay-skin='switch' lay-text='正常|禁言' lay-filter='chat_state' checked>"
+                            } else if (res.user_chat_state === 1) {
+                                return "<input type='checkbox' menuId='" + menuId + "' lay-skin='switch' lay-text='正常|禁言' lay-filter='chat_state'>"
+                            }
+                        }
+                    }
+                    , {field: 'timeLimitLogin', title: '封号时间', width: 200, sort: true}
+                    , {field: 'timeLimitChat', title: '禁言时间', width: 200, sort: true}
+                    , {fixed: '', title: '操作', width: 120, align: 'center', toolbar: '#barDemo'}
+                ]],
+                id: 'testReload',
+                even: true, //开启隔行背景
+                done: function () {
+                    toolbar();
+                }
+            });
+
+
+            //监听行工具事件
+            table.on('tool(userInfo)', function (obj) {
+                var data = obj.data;
+                if (obj.event === 'detail') { // 查看按钮
+                    layer.open({
+                        type: 1,
+                        content: $("#detail_form"),
+                        area: ["600px", '800px'],
+                        success: function () {
+                            form.val("detailForm", {
+                                "detail_uid": data.uid,
+                                "detail_user_name": data.name,
+                                "detail_lv": data.lv,
+                                "detail_create_time": data.createTime,
+                                "detail_last_time": data.lastTime,
+                                "detail_guild": data.guildName,
+                                "detail_diamond": data.diamondNum,
+                                "detail_silver": data.silver,
+                            })
+                        }
+                    })
+                } else if (obj.event === 'edit') {
+                    layer.open({
+                        //layer提供了5种层类型。可传入的值有：0（信息框，默认）1（页面层）2（iframe层）3（加载层）4（tips层）
+                        type: 1,
+                        title: "修改采集设备信息",
+                        area: ["500px", '600px'],
+                        content: $("#update_form"),//引用的弹出层的页面层的方式加载修改界面表单
+                        success: function () {
+                            form.val("updateForm", {
+                                "update_user_id": data.uid,
+                                "update_user_name": 0,
+                                "update_time_limit_login": data.timeLimitLogin,
+                                "update_time_limit_chat": data.timeLimitChat,
+                            })
+                        }
+                    });
+                }
+            });
+
+            form.on('submit(btnSubmit)', function () {
+                var uid = $("#update_user_id").val()
+                var userName = $("#update_user_name").val()
+                var timeLimitLogin = $("#banLoginTime").val()
+                var timeLimitChat = $("#banChatTime").val()
+                $.ajax({
+                    type: "POST",
+                    url: "/game/operate/update/userInfo/",
+                    data: {
+                        "uid": uid,
+                        "userName": userName,
+                        "timeLimitLogin": timeLimitLogin,
+                        "timeLimitChat": timeLimitChat,
+                    },
+                    dataType: "JSON",
+                    success: function (res) { 　 // 请求被成功响应之后会做的事
+
+                        alert(res.data)
+
+                        setTimeout(function () {
+                            obj.update({
+                                eqptType: massage.field.neweqptType,
+                                eqptIdCode: massage.field.neweqptIdCode,
+                                eqptName: massage.field.neweqptName
+                            });//修改成功修改表格数据不进行跳转
+                            layer.closeAll();//关闭所有的弹出层
+                        }, 1000);
+
+                    }
+                })
+            })
+
+            // 根据状态修改数据库的值
+            form.on('switch(login_state)', function (data) {
+                $.ajax({
+                    type: "get",
+                    url: "/game/operate/updateDisableLogin/",
+                    data: {
+                        "state": data.elem.checked,
+                        "id": table.cache.testReload[0].uid,
+                    },
+                    dataType: "JSON",
+                    success: function (res) {
+                        console.log(res)
+                    },
+                    error: function (err) {
+                        console.log(err) 　　    // 请求发生错误时会做的事
+                    }
+                });
+            });
+
+            // 根据状态修改数据库的值
+            form.on('switch(chat_state)', function (data) {
+                $.ajax({
+                    type: "get",
+                    url: "/game/operate/updateDisableChat/",
+                    data: {
+                        "state": data.elem.checked,
+                        "id": table.cache.testReload[0].uid,
+                    },
+                    dataType: "JSON",
+                    success: function (res) {
+                        console.log(res)
+                    },
+                    error: function (err) {
+                        console.log(err) 　　    // 请求发生错误时会做的事
+                    }
+                });
+            });
+
+
+            function toolbar() {
+
+                $("#select_id_btn").on('click', function () {
+
+                    if ($('#userIdInfo').val() === '') {
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.open({
+                                title: '提示消息',
+                                content: '查询用户id不能为空！'
+                            });
+                        });
+                    } else {
+                        table.reload('testReload', {
+                            url: '/game/operate/userInfo/',
+                            method: 'get',
+                            page: {
+                                curr: 1
+                            }
+                            , where: {'userIdInfo': $('#userIdInfo').val()},
+                        }, 'data')
+                    }
+                })
+
+
+                $("#select_name_btn").on('click', function () {
+                    if ($('#userNameInfo').val() === '') {
+                        layui.use('layer', function () {
+                            var layer = layui.layer;
+                            layer.open({
+                                title: '提示消息',
+                                content: '查询用户昵称不能为空！'
+                            });
+                        });
+                    } else {
+                        table.reload('testReload', {
+                            url: '/game/operate/userInfo/',
+                            method: 'get',
+                            page: {
+                                curr: 1
+                            }
+                            , where: {'userNameInfo': $('#userNameInfo').val()},
+                        }, 'data')
+                    }
+                })
+            }
+
+
+            $("#resetForm").on('click', function () {
+                layer.closeAll()
+            })
+
+            $.ajaxSetup({
+                data: {csrfmiddlewaretoken: '{{ csrf_token }}'}
+            })
+        });
+
+
+    </script>
+{% endblock %}
